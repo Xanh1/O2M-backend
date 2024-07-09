@@ -15,6 +15,8 @@ class Errors:
         '-16': "LA IP NO ES VALIDA",
         '-14': "No tiene el token",
         '-15': "Token no valido",
+        '-17': "Las direcciones latitud o longitud no son validas",
+        '-18': "Ingrese latitud y longitud validas",
         "-40": "No se encuentra",
         "-41": "Correo repetido",
         "-42": "DNI repetido",
