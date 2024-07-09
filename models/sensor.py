@@ -39,6 +39,8 @@ class Sensor(Base.Model):
             'status': self.status,
             'element_type': str(self.element_type),  
             'ip': self.ip,
+            'latitude': self.latitude,
+            'longitude':self.longitude
         }
     
     
@@ -51,6 +53,8 @@ class Sensor(Base.Model):
             element_type = self.element_type,
             status       = self.status,
             ip           = self.ip,
+            latitude = self.latitude,
+            longitude= self.longitude,
 
         )
     

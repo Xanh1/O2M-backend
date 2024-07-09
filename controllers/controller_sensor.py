@@ -29,6 +29,8 @@ class ControllerSensor():
                 sensor.ip = data['ip']
                 sensor.element_type = data['element_type']            
                 sensor.name = data['name']
+                sensor.latitude= data['latitude']
+                sensor.longitude= data['longitude']
 
                 sensor.status = True
                 #sensor.uid = uuid.uuid4
@@ -56,6 +58,8 @@ class ControllerSensor():
                 new_sensor.name = data.get('name', sensor.name)
                 new_sensor.element_type = data.get('element_type', sensor.element_type)
                 new_sensor.ip = data.get('ip', sensor.ip)
+                new_sensor.latitude= data.get('latitude', sensor.latitude)
+                new_sensor.longitude= data.get('longitude', sensor.longitude)
                 new_sensor.people = sensor.people  # Ensure `sensor.people` is not a set
                 new_sensor.uid = uuid.uuid4()
                 Base.session.merge(new_sensor)
