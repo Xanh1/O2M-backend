@@ -21,7 +21,7 @@ def home():
 
 
 @api_persona.route('/person/save'   , methods = ["POST"])
-@token_required
+#@token_required
 @expects_json(save_person)
 def save_person():
     data = request.json 

@@ -19,7 +19,7 @@ class ControllerSensor():
         else:
             return False
 
-    def validate_coordinates(latitude, longitude):
+    def validate_coordinates(self,latitude, longitude):
         try:
             lat = float(latitude)
             lon = float(longitude)

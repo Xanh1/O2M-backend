@@ -81,9 +81,8 @@ def search_by_name(name):
             400
         )
         
-@url_sensor.route('/modify_status_Sensor/<uid>', methods=["POST"])
+@url_sensor.route('/modify_status_Sensor/<uid>')
 @token_required
-@expects_json(schema_modify_Status_sensor) #enviando json con el uid para que se pueda cambiar el estado
 def modify_status_Sensor(uid):
     c = sensorC.change_status(uid)
     if c >= 0:
