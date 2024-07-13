@@ -43,7 +43,7 @@ class Monitoring(Base.Model):
             start_date = self.start_date,
             end_date   = self.end_date,
             data       = self.data,
-            sensor_id  = self.sensor_id,
+            sensor_id  = self.sensor_id
         )
     
         return copy_monitoring
