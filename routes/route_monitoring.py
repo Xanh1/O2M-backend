@@ -43,6 +43,30 @@ def list_monitoring_within_date_range():
         )
 
 
+@url_monitoring.route('/monitoring/promedio/por-dia/aire', methods=['GET'])
+#@token_required
+def promedio_calidad_por_dia_aire():
+    controller = ControllerMonitoring()
+    promedios = controller.obtener_promedio_calidad_por_dia_air()  # Asegúrate de que este método exista
+    return make_response(jsonify({"msg": "OK", "code": 200, "datos": promedios}), 200)
+
+@url_monitoring.route('/monitoring/promedio/por-dia/agua', methods=['GET'])
+#@token_required
+def promedio_calidad_por_dia_agua():
+    controller = ControllerMonitoring()
+    promedios = controller.obtener_promedio_calidad_por_dia_water()  # Asegúrate de que este método exista
+    return make_response(jsonify({"msg": "OK", "code": 200, "datos": promedios}), 200)
+
+
+#Tanto de agua como de air
+@url_monitoring.route('/monitoring/promedio/todo', methods=['GET'])
+#@token_required
+def promedio_calidad_por_dia_todo():
+    controller = ControllerMonitoring()
+    promedios = controller.obtener_promedios_calidad_por_dia()  # Este es el método combinado
+    return make_response(jsonify({"msg": "OK", "code": 200, "datos": promedios}), 200)
+
+'''
 #sirve para listar monitoreos con base a un intervalo de fecha y ademas un iteravalo de coordenadas 
 @url_monitoring.route('/monitoring/list/date/location', methods=['GET'])
 @token_required
@@ -58,6 +82,7 @@ def list_monitoring_within_date_and_location():
             jsonify({"msg": "ERROR", "code": 400, "datos": {"error": Errors.error.get(str(m))}}),
             400
         )
+'''
 
 #sirve para guardar monitoreso
 @url_monitoring.route('/monitoring/save', methods = ["POST"])
