@@ -57,6 +57,8 @@ class PersonaControl():
             persona.uid = uuid.uuid4()
             persona.name = data['name']
             persona.last_name = data['last_name']
+            persona.email = data['email'] 
+            persona.password = data['password']  
             Base.session.merge(persona)
             Base.session.commit()
             return persona.id
@@ -106,8 +108,8 @@ class PersonaControl():
         else:
             return -40  
         
-    def changeStatePerson(self, uid):
-        persona = Person.query.filter_by(uid=uid).first()
+    def changeStatePerson(self, data):
+        persona = Person.query.filter_by(uid=data['external']).first()
         if persona:
             try:
                 persona.uid = uuid.uuid4()

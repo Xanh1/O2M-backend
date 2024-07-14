@@ -15,9 +15,11 @@ edit_person = {
     'propierties' : {
         'external' : {'type': 'string'},
         'name': {'type' : 'string'},
-        'last_name': {'type' : 'string'}
+        'last_name': {'type' : 'string'},
+        'email': {'type' : 'string'},
+        'password': {'type' : 'string'}
     },
-    'required' : ['name', 'last_name', 'external']
+    'required' : ['name', 'last_name', 'external', 'email','password']
 }
 
 edit_person_email = {
@@ -28,4 +30,12 @@ edit_person_email = {
         'password': {'type' : 'string'}
     },
     'required' : ['email','password', 'external']
+}
+
+change_state_person = {
+    'type' : 'object',
+    'propierties' : {
+        'external' : {'type': 'string'},
+    },
+    'required' : ['external']
 }

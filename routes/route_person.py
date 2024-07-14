@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, make_response, request
 from flask_expects_json import expects_json
 from controllers.control_person import PersonaControl
-from routes.schemas.schameas_person import save_person, edit_person, edit_person_email
+from routes.schemas.schameas_person import save_person, edit_person, edit_person_email, change_state_person
 from routes.schemas.schemes_auth import schema_login
 from controllers.utils.errors import Errors
 from controllers.auth import token_required
@@ -10,18 +10,18 @@ api_persona = Blueprint('api_persona_persona', __name__)
 
 personaC = PersonaControl()
 
-
+@token_required
 @api_persona.route('/person')
 @token_required
 def home():
     return make_response(
-        jsonify({"msg" : "OK", "code" : 200, "datos" : ([i.serialize for i in personaC.listar()])}), 
+        jsonify({"msg" : "OK", "code" : 200, "datos" : ([i.serialize for i in personaC.list()])}), 
         200
     )
 
 
 @api_persona.route('/person/save'   , methods = ["POST"])
-#@token_required
+@token_required
 @expects_json(save_person)
 def save_person():
     data = request.json 
@@ -102,9 +102,12 @@ def search_person_uid(uid):
             200
         )
     
-@api_persona.route('/person/change_state/<external_id>' , methods = ["GET"])
-def change_state_person(external_id):
-    id = personaC.changeStatePerson(external_id) 
+@api_persona.route('/person/change_state' , methods = ["POST"])
+@token_required
+@expects_json(change_state_person)
+def change_state_person():
+    data = request.json 
+    id = personaC.changeStatePerson(data = data) 
     if(id == 1):
         return make_response(
                 jsonify({"msg" : "OK", "code" : 200, "datos" : {"tag" : "persona desactivada"}}), 
