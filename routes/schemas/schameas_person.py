@@ -17,9 +17,10 @@ edit_person = {
         'name': {'type' : 'string'},
         'last_name': {'type' : 'string'},
         'email': {'type' : 'string'},
-        'password': {'type' : 'string'}
+        'password': {'type' : 'string'},
+        'old_password' : {'type':'string'}
     },
-    'required' : ['name', 'last_name', 'external', 'email','password']
+    'required' : ['name', 'last_name', 'external', 'email','password', 'old_password']
 }
 
 edit_person_email = {

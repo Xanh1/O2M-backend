@@ -20,4 +20,5 @@ class Errors:
         "-41": "Correo repetido",
         "-42": "DNI repetido",
         "-42": "Longitud de DNI mayor a 10",
+        "-43": "La contraseña no coincide con la actual",
     }

@@ -52,16 +52,19 @@ class PersonaControl():
         uid = data['external']
         tem_persona = Person.query.filter_by(uid=uid).first()
         if tem_persona:
-            persona = Person()
-            persona = tem_persona.copy()
-            persona.uid = uuid.uuid4()
-            persona.name = data['name']
-            persona.last_name = data['last_name']
-            persona.email = data['email'] 
-            persona.password = data['password']  
-            Base.session.merge(persona)
-            Base.session.commit()
-            return persona.id
+            if tem_persona.password == data['old_password']:
+                persona = Person()
+                persona = tem_persona.copy()
+                persona.uid = uuid.uuid4()
+                persona.name = data['name']
+                persona.last_name = data['last_name']
+                persona.email = data['email'] 
+                persona.password = data['password']  
+                Base.session.merge(persona)
+                Base.session.commit()
+                return persona.id
+            else:
+                return -43
         else:
             return -40
         

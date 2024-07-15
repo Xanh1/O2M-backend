@@ -101,7 +101,7 @@ def search_person_uid(uid):
             jsonify({"msg" : "OK", "code" : 200, "datos" : (persona)}), 
             200
         )
-    
+ 
 @api_persona.route('/person/change_state' , methods = ["POST"])
 @token_required
 @expects_json(change_state_person)
