@@ -349,7 +349,7 @@ class ControllerMonitoring:
             "mes": mes,
             "dia": dia,
             "nombre": nombres_meses[mes - 1],  # Añadir el nombre del mes
-            "calidadExtrapolada": calidad_extrapolada
+            "valorExtrapolado": calidad_extrapolada
         }
 
         return {"msg": "OK", "code": 200, "datos": resultado}
