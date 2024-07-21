@@ -7,6 +7,11 @@ import uuid
 from app import Base
 from datetime import datetime
 from models.element_type import ElementType  # Asegúrate de que esta línea está presente
+import requests
+from numpy.polynomial import Polynomial
+import numpy as np
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
 
 
 class ControllerMonitoring:
@@ -82,24 +87,21 @@ class ControllerMonitoring:
         else:
             return -5  # Código de error para indicar que no se ingresó fecha de inicio
 
+#estos valeeeeeeeeen para la grafica
+
     def obtener_promedio_calidad_por_dia_air(self):
-        # Crear una lista con los nombres de los meses en español
         nombres_meses = [
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         ]
 
-        # Inicializar un diccionario para almacenar los promedios por día
         promedios_por_dia = {}
 
-        # Obtener solo los sensores de tipo aire
         sensores_aire = Sensor.query.filter(Sensor.element_type == ElementType.AIR).all()
         sensor_ids = [sensor.id for sensor in sensores_aire]
 
-        # Obtener solo los registros de monitoring que correspondan a los sensores de aire
         registros = Monitoring.query.filter(Monitoring.sensor_id.in_(sensor_ids)).all()
 
-        # Iterar sobre cada registro y agrupar los datos por año, mes y día
         for registro in registros:
             fecha = registro.start_date
             año = fecha.year
@@ -111,10 +113,8 @@ class ControllerMonitoring:
 
             promedios_por_dia[(año, mes, dia)].append(registro.data)
 
-        # Inicializar una lista vacía para los resultados
         resultados = []
 
-        # Calcular el promedio para cada día y construir la estructura deseada
         for (año, mes, dia), datos in promedios_por_dia.items():
             promedio = sum(datos) / len(datos)
 
@@ -128,26 +128,25 @@ class ControllerMonitoring:
 
             resultados.append(resultado_dia)
 
-        return resultados
-    
+        resultados_ordenados = sorted(resultados, key=lambda x: (x["año"], x["mes"], x["dia"]))
+
+        return resultados_ordenados
+
+        
+#estos valeeeeeeeeen para la grafica
     def obtener_promedio_calidad_por_dia_water(self):
-        # Crear una lista con los nombres de los meses en español
         nombres_meses = [
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         ]
 
-        # Inicializar un diccionario para almacenar los promedios por día
         promedios_por_dia = {}
 
-        # Obtener solo los sensores de tipo aire
-        sensores_aire = Sensor.query.filter(Sensor.element_type == ElementType.WATER).all()
-        sensor_ids = [sensor.id for sensor in sensores_aire]
+        sensores_agua = Sensor.query.filter(Sensor.element_type == ElementType.WATER).all()
+        sensor_ids = [sensor.id for sensor in sensores_agua]
 
-        # Obtener solo los registros de monitoring que correspondan a los sensores de aire
         registros = Monitoring.query.filter(Monitoring.sensor_id.in_(sensor_ids)).all()
 
-        # Iterar sobre cada registro y agrupar los datos por año, mes y día
         for registro in registros:
             fecha = registro.start_date
             año = fecha.year
@@ -159,10 +158,8 @@ class ControllerMonitoring:
 
             promedios_por_dia[(año, mes, dia)].append(registro.data)
 
-        # Inicializar una lista vacía para los resultados
         resultados = []
 
-        # Calcular el promedio para cada día y construir la estructura deseada
         for (año, mes, dia), datos in promedios_por_dia.items():
             promedio = sum(datos) / len(datos)
 
@@ -176,28 +173,28 @@ class ControllerMonitoring:
 
             resultados.append(resultado_dia)
 
-        return resultados
+        resultados_ordenados = sorted(resultados, key=lambda x: (x["año"], x["mes"], x["dia"]))
+
+        return resultados_ordenados
+
+    
+
     
 #Tanto de agua como de air
     def obtener_promedios_calidad_por_dia(self):
-        # Crear una lista con los nombres de los meses en español
         nombres_meses = [
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         ]
 
-        # Inicializar los diccionarios para almacenar los promedios por día
         promedios_aire = {}
         promedios_agua = {}
 
-        # Obtener los sensores de tipo aire
         sensores_aire = Sensor.query.filter(Sensor.element_type == ElementType.AIR).all()
         sensor_ids_aire = [sensor.id for sensor in sensores_aire]
 
-        # Obtener los registros de monitoring que correspondan a los sensores de aire
         registros_aire = Monitoring.query.filter(Monitoring.sensor_id.in_(sensor_ids_aire)).all()
 
-        # Calcular promedios para sensores de aire
         for registro in registros_aire:
             fecha = registro.start_date
             año = fecha.year
@@ -209,14 +206,11 @@ class ControllerMonitoring:
 
             promedios_aire[(año, mes, dia)].append(registro.data)
 
-        # Obtener los sensores de tipo agua
         sensores_agua = Sensor.query.filter(Sensor.element_type == ElementType.WATER).all()
         sensor_ids_agua = [sensor.id for sensor in sensores_agua]
 
-        # Obtener los registros de monitoring que correspondan a los sensores de agua
         registros_agua = Monitoring.query.filter(Monitoring.sensor_id.in_(sensor_ids_agua)).all()
 
-        # Calcular promedios para sensores de agua
         for registro in registros_agua:
             fecha = registro.start_date
             año = fecha.year
@@ -228,13 +222,11 @@ class ControllerMonitoring:
 
             promedios_agua[(año, mes, dia)].append(registro.data)
 
-        # Inicializar la estructura final para el resultado
         resultados = {
             "aire": [],
             "agua": []
         }
 
-        # Calcular el promedio para aire
         for (año, mes, dia), datos in promedios_aire.items():
             promedio = sum(datos) / len(datos)
             resultado_dia = {
@@ -245,7 +237,6 @@ class ControllerMonitoring:
             }
             resultados["aire"].append(resultado_dia)
 
-        # Calcular el promedio para agua
         for (año, mes, dia), datos in promedios_agua.items():
             promedio = sum(datos) / len(datos)
             resultado_dia = {
@@ -257,4 +248,101 @@ class ControllerMonitoring:
             resultados["agua"].append(resultado_dia)
 
         return resultados
+
+
+#Mrtodo para la extrapolacion de aire
+    def extrapolar_calidad_para_fecha_aire(self, dia, mes, año, grado=1):
+        url = "http://127.0.0.1:5000/monitoring/promedio/por-dia/aire"
+        
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            json_data = response.json()
+        except requests.RequestException as e:
+            return {"msg": f"Error en la solicitud a {url}: {str(e)}", "code": 500}
+
+        if json_data['code'] != 200:
+            return {"msg": "Error al obtener los datos de calidad del aire", "code": 400}
+        
+        datos = json_data['datos']
+        
+        datos_filtrados = [d for d in datos if d['mes'] == mes]
+        
+        if len(datos_filtrados) < 3:
+            return {"msg": "No hay datos suficientes para extrapolación", "code": 400}
+
+        dias = []
+        calidad_datos = []
+        for d in datos_filtrados:
+            if 'dia' in d and 'promedioCalidadDato' in d:
+                dias.append(d['dia'])
+                calidad_datos.append(d['promedioCalidadDato'])
+        
+        if len(dias) < 1 or len(calidad_datos) < 1:
+            return {"msg": "No hay datos suficientes para extrapolación", "code": 400}
+
+        try:
+            calidad_extrapolada = calidad_datos[0]
+            for i in range(1, len(dias)):
+                p = Polynomial.fit(dias[:i+1], calidad_datos[:i+1], grado)
+                calidad_extrapolada = p(dias[i])
+        except np.linalg.LinAlgError:
+            return {"msg": "Error numérico en el ajuste del polinomio", "code": 500}
+
+        resultado = {
+            "año": año,
+            "mes": mes,
+            "dia": dia,
+            "calidadExtrapolada": calidad_extrapolada
+        }
+
+        return {"msg": "OK", "code": 200, "datos": resultado}
+
+#Mrtodo para la extrapolacion de agua
+    def extrapolar_calidad_para_fecha_agua(self, dia, mes, año, grado=1):
+        url = "http://127.0.0.1:5000/monitoring/promedio/por-dia/agua"
+        
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            json_data = response.json()
+        except requests.RequestException as e:
+            return {"msg": f"Error en la solicitud a {url}: {str(e)}", "code": 500}
+
+        if json_data['code'] != 200:
+            return {"msg": "Error al obtener los datos de calidad del agua", "code": 400}
+        
+        datos = json_data['datos']
+        
+        datos_filtrados = [d for d in datos if d['mes'] == mes]
+        
+        if len(datos_filtrados) < 3:
+            return {"msg": "No hay datos suficientes para extrapolación", "code": 400}
+
+        dias = []
+        calidad_datos = []
+        for d in datos_filtrados:
+            if 'dia' in d and 'promedioCalidadDato' in d:
+                dias.append(d['dia'])
+                calidad_datos.append(d['promedioCalidadDato'])
+        
+        if len(dias) < 1 or len(calidad_datos) < 1:
+            return {"msg": "No hay datos suficientes para extrapolación", "code": 400}
+
+        try:
+            calidad_extrapolada = calidad_datos[0]
+            for i in range(1, len(dias)):
+                p = Polynomial.fit(dias[:i+1], calidad_datos[:i+1], grado)
+                calidad_extrapolada = p(dias[i])
+        except np.linalg.LinAlgError:
+            return {"msg": "Error numérico en el ajuste del polinomio", "code": 500}
+
+        resultado = {
+            "año": año,
+            "mes": mes,
+            "dia": dia,
+            "calidadExtrapolada": calidad_extrapolada
+        }
+
+        return {"msg": "OK", "code": 200, "datos": resultado}
 
