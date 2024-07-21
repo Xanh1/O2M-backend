@@ -161,6 +161,6 @@ def extrapolar_agua():
     año = data['año']
     
     controller = ControllerMonitoring()
-    resultado = controller.extrapolar_calidad_para_fecha_aire(dia, mes, año)
+    resultado = controller.extrapolar_calidad_para_fecha_agua(dia, mes, año)
     
     return make_response(jsonify(resultado), resultado["code"])
