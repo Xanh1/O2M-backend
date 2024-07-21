@@ -42,7 +42,7 @@ def list_monitoring_within_date_range():
             400
         )
 
-
+#estos valeeeeeeeeen para la grafica
 @url_monitoring.route('/monitoring/promedio/por-dia/aire', methods=['GET'])
 #@token_required
 def promedio_calidad_por_dia_aire():
@@ -50,13 +50,13 @@ def promedio_calidad_por_dia_aire():
     promedios = controller.obtener_promedio_calidad_por_dia_air()  # Asegúrate de que este método exista
     return make_response(jsonify({"msg": "OK", "code": 200, "datos": promedios}), 200)
 
+#estos valeeeeeeeeen para la grafica
 @url_monitoring.route('/monitoring/promedio/por-dia/agua', methods=['GET'])
 #@token_required
 def promedio_calidad_por_dia_agua():
     controller = ControllerMonitoring()
     promedios = controller.obtener_promedio_calidad_por_dia_water()  # Asegúrate de que este método exista
     return make_response(jsonify({"msg": "OK", "code": 200, "datos": promedios}), 200)
-
 
 #Tanto de agua como de air
 @url_monitoring.route('/monitoring/promedio/todo', methods=['GET'])
@@ -121,3 +121,46 @@ def modifyMonitoring(uid):
             jsonify({"msg": "ERROR", "code": 400, "datos": {"error": error_message}}),
             400
         )
+
+#Route para extrapolar agua
+@url_monitoring.route('/monitoring/extrapolar/aire', methods=['POST'])
+#@token_required
+def extrapolar_aire():
+    data = request.json
+    
+    if not data or 'dia' not in data or 'mes' not in data or 'año' not in data:
+        return make_response(
+            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": "Datos insuficientes para la extrapolación"}}),
+            400
+        )
+
+    dia = data['dia']
+    mes = data['mes']
+    año = data['año']
+    
+    controller = ControllerMonitoring()
+    resultado = controller.extrapolar_calidad_para_fecha_aire(dia, mes, año)
+    
+    return make_response(jsonify(resultado), resultado["code"])
+
+
+#Route para extrapolar agua
+@url_monitoring.route('/monitoring/extrapolar/agua', methods=['POST'])
+#@token_required
+def extrapolar_agua():
+    data = request.json
+    
+    if not data or 'dia' not in data or 'mes' not in data or 'año' not in data:
+        return make_response(
+            jsonify({"msg": "ERROR", "code": 400, "datos": {"error": "Datos insuficientes para la extrapolación"}}),
+            400
+        )
+
+    dia = data['dia']
+    mes = data['mes']
+    año = data['año']
+    
+    controller = ControllerMonitoring()
+    resultado = controller.extrapolar_calidad_para_fecha_aire(dia, mes, año)
+    
+    return make_response(jsonify(resultado), resultado["code"])
