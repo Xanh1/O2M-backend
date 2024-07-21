@@ -253,6 +253,10 @@ class ControllerMonitoring:
 #Mrtodo para la extrapolacion de aire
     def extrapolar_calidad_para_fecha_aire(self, dia, mes, año, grado=1):
         url = "http://127.0.0.1:5000/monitoring/promedio/por-dia/aire"
+        nombres_meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ]
         
         try:
             response = requests.get(url)
@@ -262,7 +266,7 @@ class ControllerMonitoring:
             return {"msg": f"Error en la solicitud a {url}: {str(e)}", "code": 500}
 
         if json_data['code'] != 200:
-            return {"msg": "Error al obtener los datos de calidad del aire", "code": 400}
+            return {"msg": "Error al obtener los datos de calidad del agua", "code": 400}
         
         datos = json_data['datos']
         
@@ -291,16 +295,19 @@ class ControllerMonitoring:
 
         resultado = {
             "año": año,
-            "mes": mes,
             "dia": dia,
-            "calidadExtrapolada": calidad_extrapolada
+            "mes": f"{nombres_meses[mes - 1]}",  # Añadir el nombre del mes y el número del mes
+            "valorExtrapolado": calidad_extrapolada
         }
 
         return {"msg": "OK", "code": 200, "datos": resultado}
-
-#Mrtodo para la extrapolacion de agua
+#Método para la extrapolación de agua
     def extrapolar_calidad_para_fecha_agua(self, dia, mes, año, grado=1):
         url = "http://127.0.0.1:5000/monitoring/promedio/por-dia/agua"
+        nombres_meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ]
         
         try:
             response = requests.get(url)
@@ -341,8 +348,8 @@ class ControllerMonitoring:
             "año": año,
             "mes": mes,
             "dia": dia,
+            "nombre": nombres_meses[mes - 1],  # Añadir el nombre del mes
             "calidadExtrapolada": calidad_extrapolada
         }
 
         return {"msg": "OK", "code": 200, "datos": resultado}
-
